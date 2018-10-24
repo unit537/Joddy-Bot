@@ -6,7 +6,8 @@ const private = require('./token.json');
 const config = require('./config.json');
 
 let commandPrefix = config.commandPrefix;
-let guildID = config.guildId;
+let botActivity = config.activity
+let guildId = config.guildId;
 let checkInChannelId = config.checkInChannelId;
 let cfgCheckInTime = config.checkInTime.split(":")
 
@@ -20,17 +21,30 @@ const client = new Discord.Client();
 // Bot init
 client.on('ready', () => {
   logger.log(`${client.user.tag} reporting for duty!`);
-  client.user.setActivity('<Break Time>');
+  client.user.setActivity(botActivity);
 });
 
 // Commands from Discord via messages...
 client.on('message', async message => {
+  // Joddy won't respond to himself.
   if (message.author.bot) return;
+
+  // Joddy won't respond to messages that don't start with our
+  // designated command prefix.
   if (message.content.indexOf(commandPrefix) !== 0) return;
+  
+  // So, you can check `message.channel.type` for `dm` but this only
+  // works for direc, non-group DMs. If there's no Guild associated
+  // with the message, it must be some sort of DM.
+  if (message.guild != null) {
+    // We only want Joddy to work on the server we set him up for
+    if (message.guild.id != guildId) return;
+  }
 
   const args = message.content.slice(commandPrefix.length).trim().split(/ +/g);
   const command = args.shift().toLowerCase();
 
+  // TODO: Flesh out the help command
   if (command === 'help'){
     return message.channel.send("Maybe later.");
   }
@@ -46,6 +60,12 @@ client.on('message', async message => {
   }
 });
 
+// Error handling
+client.on('error', () => {
+  //Handle the errors!
+});
+
+// Let's log Joddy in with your PRIVATE TOKEN, DO NOT SHARE YOUR TOKEN
 client.login(private.token);
 
 // Guild Check-In timer... (8PM EST)
@@ -56,11 +76,13 @@ let timeNow = new Date();
 let checkInTime = new Date(timeNow.getFullYear(), timeNow.getMonth(), timeNow.getDate(), cfgCheckInTime[0], cfgCheckInTime[1], cfgCheckInTime[2], 0);
 let returnTime = checkInTime - timeNow;
 
+// If it's too late for the check-in alert today, do it tomorrow.
 if (returnTime < 0) {
   checkInTime = new Date(timeNow.getFullYear(), timeNow.getMonth(), timeNow.getDate()+1, cfgCheckInTime[0], cfgCheckInTime[1], cfgCheckInTime[2], 0);
   returnTime = checkInTime - timeNow;
 }
 
+// Call the checkIn function after the returnTime passes.
 client.setTimeout(checkIn, returnTime);
 logger.log(`Check-In time set to ${returnTime}ms from now`)
 

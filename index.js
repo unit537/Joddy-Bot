@@ -33,12 +33,15 @@ client.on('message', async message => {
   // designated command prefix.
   if (message.content.indexOf(commandPrefix) !== 0) return;
   
-  // So, you can check `message.channel.type` for `dm` but this only
-  // works for direc, non-group DMs. If there's no Guild associated
-  // with the message, it must be some sort of DM.
+  // So... you can check `message.channel.type` for `dm` but this
+  // only works for direc, non-group DMs. If there's no Guild
+  // associated with the message, it must be some sort of DM.
   if (message.guild != null) {
     // We only want Joddy to work on the server we set him up for
-    if (message.guild.id != guildId) return;
+    if (message.guild.id != guildId){
+      logger.log(`Joddy access from different guild! ID:${message.guild.id}`);
+      return;
+    }
   }
 
   const args = message.content.slice(commandPrefix.length).trim().split(/ +/g);
@@ -55,7 +58,7 @@ client.on('message', async message => {
     // Reply with the given string
     const reply = args.join(' ');
     // Send the reply
-    logger.log(`${message.author.username} (ID: ${message.author.id}) made Joddy say: \"${reply}\"`);
+    logger.log(`${message.author.tag} (ID: ${message.author.id}) made Joddy say: \"${reply}\"`);
     return message.channel.send(reply);
   }
 });

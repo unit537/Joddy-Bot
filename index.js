@@ -10,6 +10,7 @@ let botActivity = config.activity
 let guildId = config.guildId;
 let checkInChannelId = config.checkInChannelId;
 let cfgCheckInTime = config.checkInTime.split(":")
+let roles = config.roles;
 
 /* Logger */
 const logger = require('./logger.js');
@@ -39,12 +40,15 @@ client.on('message', async message => {
   if (message.guild != null) {
     // We only want Joddy to work on the server we set him up for
     if (message.guild.id != guildId){
-      logger.log(`Joddy access from different guild! ID:${message.guild.id}`);
+      logger.log(`Joddy access from different guild! Name:${message.guild.name}, ID:${message.guild.id}`);
       return;
     }
+  } else {
+    // This is a DM
+    return;
   }
 
-  const args = message.content.slice(commandPrefix.length).trim().split(/ +/g);
+  const args = message.content.slice(commandPrefix.length).trim().split(' '); // `/ +/g`
   const command = args.shift().toLowerCase();
 
   // TODO: Flesh out the help command
@@ -61,6 +65,48 @@ client.on('message', async message => {
     logger.log(`${message.author.tag} (ID: ${message.author.id}) made Joddy say: \"${reply}\"`);
     return message.channel.send(reply);
   }
+
+  if (command === 'role'){
+    let user = message.guild.member(message.author);
+    let guild = message.guild;
+    let mode = args[0].toLowerCase();
+    let errorMessage = `Available roles are:\n${roles.join(', ')}\nRemember! Role names are case-sensitive!`;
+    
+    switch(mode){
+      case 'add':
+        for(var i = 1; i < args.length; i++){
+          let roleName = args[i];
+          let role = guild.roles.find(role => role.name === roleName);
+          if (roles.indexOf(roleName) != -1 && role){
+            user.addRole(role.id);
+            logger.log(`Added ${message.author.tag} to the ${role.name} role!`);
+          }
+          else {
+            message.channel.send(errorMessage);
+          }
+        }
+        break;
+      case 'remove':
+        for(var j = 1; j < args.length; j++){
+          let roleName = args[j];
+          let role = guild.roles.find(role => role.name === roleName);
+          if (roles.indexOf(roleName) != -1 && role){
+            user.removeRole(role.id,'Bot Action');
+            logger.log(`Removed ${message.author.tag} from the ${role.name} role!`);
+          }
+          else {
+            message.channel.send(errorMessage);
+          }
+        }
+        break;
+      case 'listall':
+        // Not really any error, but the errorMessage contains the relevant info...
+        message.channel.send(errorMessage);
+        break;
+    }
+  }
+
+  return;
 });
 
 // Error handling

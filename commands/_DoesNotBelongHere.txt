@@ -1,0 +1,3 @@
+Files like this one won't be parsed as commands for the bot, so don't worry!
+
+Files that aren't command files really don't belong here though...

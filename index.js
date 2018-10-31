@@ -31,11 +31,11 @@ fs.readdir('./commands', (err, files) => {
 
   let cmdFiles = files.filter(f => f.split('.').pop() === 'js')
   if (cmdFiles.length <= 0){
-    return console.log('Couldn\'t find commands');
+    return logger.log('Couldn\'t find any commands!');
   }
   cmdFiles.forEach((f, i) =>{
     let props = require(`./commands/${f}`);
-    console.log(`${f} loaded!`);
+    logger.log(`Loaded command file: ${f}`);
     client.commands.set(props.help.name, props);
   });
 });
@@ -84,6 +84,7 @@ client.on('error', () => {
 // Let's log Joddy in with your PRIVATE TOKEN, DO NOT SHARE YOUR TOKEN
 client.login(private.token);
 
+// Run the daily alert module
 dailyAlert.run(client);
 
 /* H-hello J-J-Joddy...! */

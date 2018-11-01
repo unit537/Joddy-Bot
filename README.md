@@ -19,8 +19,31 @@ Joddy-Bot is a MapleStory 2 themed Discord bot written in JavaScript. Joddy runs
     "guildId":"000000000000000000",
     "checkInChannelId":"000000000000000000",
     "checkInTime":"23:59:59",
-    "roles":["Tank","DPS","Healer","Archer","Assassin","Berserker","HeavyGunner","Knight","Priest","Thief","Wizard","Runeblade","Soulbinder","Striker"]
+    "roles":["Archer","Assassin","Berserker","HeavyGunner","Knight","Priest","Thief","Wizard","Runeblade","Soulbinder","Striker"]
 }
 ```
 **Make sure your role names DO NOT contain spaces!** Joddy might support role names with spaces in the future!
+
 **Role Names are Case-Sensitive!** Make sure your roles are named properly on your server and in your config!
+
+### Adding a new command to Joddy
+```
+const logger = require('../logger.js');
+//const config = require('../config.json');
+//const Discord = require('discord.js');
+
+module.exports.run = async (client, message, args) => {
+    logger.log(`${message.author.tag} (ID: ${message.author.id}) Called the "Hello, World!" command with args: ${args}`)
+
+    message.channel.send('Hello, World! I am Joddy!');
+}
+
+module.exports.help = {
+    name: "hello"
+}
+```
+You can create new commands for joddy by using the above template, also found at `/commands/_template.js`.
+
+*Make sure you set the name for your command!*
+
+*Insert your command code inside the function block `run`*

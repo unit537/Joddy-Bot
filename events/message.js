@@ -9,10 +9,6 @@ module.exports = (client, message) => {
 
     // ignore messages made by bot users
     if (message.author.bot) return;
-    // ignore messages that do not start with the commandPrefix, and are not the #role-assignment channel
-    // if (message.content.indexOf(commandPrefix) != 0 && message.channel.id != roleChannelId) return;
-    // Delete messages that do not start with the commandPrefix, and are in the #role-assignment channel
-    // if (message.content.indexOf(commandPrefix) != 0 && message.channel.id === roleChannelId) return message.delete().catch(err=>{console.log(err)});
     // Determine if DM
     if (message.guild != null) {
         if (message.guild.id != guildId){
@@ -27,16 +23,21 @@ module.exports = (client, message) => {
     const args = message.content.slice(commandPrefix.length).trim().split(' ');
     const command = args.shift().toLowerCase();
 
+    // I really don't like hardcoding the command strings here, will change this later...
+    if ((message.channel.id === roleChannelId) && (command != 'role' || command != 'say')) {
+        return message.delete().catch(err=>{console.log(err)});
+    }
+
     // Ok, so technicalities here... ${commandFile} is **not** actually a reference to the file at all,
     // it is just a reference to the cached version of the file! If that file has changed at any point
-
+    // those changes will not take effect until you restart the program.
     let commandFile = client.commands.get(command);
     if (commandFile){
         commandFile.run(client, message, args)
     }
 
     if (message.channel.id === roleChannelId) {
-        message.delete().catch(err=>{console.log(err)});
+        return message.delete().catch(err=>{console.log(err)});
     }
 }
 

@@ -18,7 +18,8 @@ module.exports.run = async (client, message, args) => {
     let roleAssignWrongChannelMessage = `Please use the ${message.guild.channels.get(roleChannelId).name} channel to assign yourself a role! Thank you!`;
 
     // Delete every message calling this command.
-    message.delete().catch(err=>{console.log(err)});
+    // message.delete().catch(err=>{console.log(err)});
+    // --- This message will be deleted by the 'message' event ---
 
     if (message.channel.id != roleChannelId) {
         return client.users.get(message.author.id).send(`${roleAssignWrongChannelMessage}`);
@@ -39,7 +40,7 @@ module.exports.run = async (client, message, args) => {
                     client.users.get(message.author.id).send(`You have been assigned the ${role.name} role! Congrats!`);
                 }
                 else {
-                    client.users.get(message.author.id).send(`I'm sorry but the ${role.name} role doesn't exist!\n${errorMessage}`);
+                    client.users.get(message.author.id).send(`I'm sorry but the ${roleName} role doesn't exist!\n${errorMessage}`);
                 }
             }
             break;

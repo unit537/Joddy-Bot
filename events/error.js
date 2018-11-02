@@ -1,4 +1,4 @@
-const logger = require('../logger.js');
+//const logger = require('../logger.js');
 //const config = require('../config.json');
 //const Discord = require('discord.js');
 

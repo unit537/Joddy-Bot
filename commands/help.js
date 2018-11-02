@@ -4,8 +4,8 @@ const logger = require('../logger.js');
 
 module.exports.help = {
     // name must match the name of the command as it should be called
-    // to call this command a user must message "!hello" in discord
-    name: "hello"
+    // to call this command a user must message "!example" in discord
+    name: "help"
 }
 
 module.exports.run = async (client, message, args) => {
@@ -17,5 +17,5 @@ module.exports.run = async (client, message, args) => {
     // This is where you'll put the code that runs a command, check out this
     // "Hello, World" example!
 
-    message.channel.send('Hello, World! I am Joddy!');
+    message.channel.send('This command is a work in progress, please check back later!');
 }

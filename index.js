@@ -29,11 +29,10 @@ fs.readdir('./events', (err, files) => {
   }
   eventFiles.forEach((f, i) =>{
     const event = require(`./events/${f}`);
-    logger.log(`Loaded event file: ${f}`);
     client.on(event.help.name, event.bind(null, client));
+    logger.log(`Loaded event file: ${f}`);
   });
 });
-
 
 /* Load the commands */
 fs.readdir('./commands', (err, files) => {
@@ -45,8 +44,8 @@ fs.readdir('./commands', (err, files) => {
   }
   cmdFiles.forEach((f, i) =>{
     let props = require(`./commands/${f}`);
-    logger.log(`Loaded command file: ${f}`);
     client.commands.set(props.help.name, props);
+    logger.log(`Loaded command file: ${f}`);
   });
 });
 

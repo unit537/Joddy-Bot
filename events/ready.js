@@ -4,7 +4,7 @@ const config = require('../config.json');
 
 module.exports = (client) => {
     let botActivity = config.activity
-
+    
     logger.log(`${client.user.tag} reporting for duty!`);
     client.user.setActivity(botActivity);
 }

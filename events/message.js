@@ -24,7 +24,7 @@ module.exports = (client, message) => {
     const command = args.shift().toLowerCase();
 
     // I really don't like hardcoding the command strings here, will change this later...
-    if ((message.channel.id === roleChannelId) && (command != 'role' || command != 'say')) {
+    if ((message.channel.id === roleChannelId) && (command != 'role' && command != 'say')) {
         return message.delete().catch(err=>{console.log(err)});
     }
 
